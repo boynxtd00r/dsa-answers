@@ -1,23 +1,4 @@
----
-jupytext:
-  formats: ipynb,md:myst
-  text_representation:
-    extension: .md
-    format_name: myst
-    format_version: 0.13
-    jupytext_version: 1.17.3
-kernelspec:
-  display_name: Python 3 (ipykernel)
-  language: python
-  name: python3
----
-
-```{code-cell} ipython3
----
-editable: true
-slideshow:
-  slide_type: ''
----
+```python
 import random
 import matplotlib.pyplot as plt
 from usage_time import get_usage_time
@@ -84,44 +65,74 @@ plt.tight_layout()
 plt.show()
 ```
 
-```{code-cell} ipython3
-import random
-from usage_time import get_usage_time
-import matplotlib.pyplot as plt
 
-# Умножение матриц
-def Matrix(n):
-    A = [[random.randint(1, 10) for _ in range(n)] for _ in range(n)]
-    B = [[random.randint(1, 10) for _ in range(n)] for _ in range(n)]
-    C = [[0 for _ in range(n)] for _ in range(n)]
     
+![png](1.png)
+    
+    
+
+
+```python
+import functools
+import timeit
+from usage_time import get_usage_time
+import typing
+
+import random
+
+N = 6
+
+def matrix_generator(n):
+    matrix = []
+    for i in range(n):
+        line = [random.randint(1, 100*N) for j in range(n)]
+        matrix.append(line)
+    return matrix
+
+def matrix_proizv(n):
+    a = matrix_generator(n)
+    b = matrix_generator(n)
+    c = [[] for i in range(n)]
     for i in range(n):
         for j in range(n):
-            for k in range(n):
-                C[i][j] += A[i][k] * B[k][j]
-                
-    return C
+            element = 0
+            for k in range(n): 
+                element += a[i][k] * b[k][j]
+            c[i].append(element)
+    return c
 
-matrix_mult_time = get_usage_time(number=5, ndigits=6)(Matrix)
+import matplotlib.pyplot as plt
 
-sizes = list(range(10, 401, 10))
-times = []
+N = 10
 
-for n in sizes:
-    avg_time = matrix_mult_time(n)
-    times.append(avg_time)
+def five_iteration_matrix(n):
+    time_of_matrix = []
+    matrix_time = get_usage_time(ndigits=5)(matrix_proizv)
+    for i in range(5):
+        time_of_matrix.append(matrix_time(n))
+    average_time_matrix = sum(time_of_matrix)/5
+    return average_time_matrix
 
-plt.figure(figsize=(12, 7))
-plt.plot(sizes, times, 'bo-', label='Mult', linewidth=2, markersize=4, alpha=0.8)
-plt.xlabel('Размер матрицы (n x n)', fontsize=12)
-plt.ylabel('Среднее время выполнения (секунды)', fontsize=12)
-plt.title('Время матричного умножения', fontsize=14)
-plt.grid(True, alpha=0.3)
-plt.yscale('log')
-plt.tight_layout()
-plt.show()
+items = list(range(1, (10**2*N)//2+1, 10))
+times_matrix = []
+for i in items:
+    times_matrix.append(five_iteration_matrix(i))
+
+plt.figure(figsize=(10, 6))
+plt.plot(items, times_matrix)
+plt.title('График для произведения матриц')
+plt.xlabel('Порядок матрицы')
+plt.ylabel('Время, сек')
+plt.grid(True)
 ```
 
-```{code-cell} ipython3
+
+    
+![png](2.png)
+    
+
+
+
+```python
 
 ```
