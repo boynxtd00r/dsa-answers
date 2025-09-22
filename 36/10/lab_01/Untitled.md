@@ -80,7 +80,7 @@ import typing
 
 import random
 
-N = 6
+N = 10
 
 def matrix_generator(n):
     matrix = []
@@ -102,8 +102,6 @@ def matrix_proizv(n):
     return c
 
 import matplotlib.pyplot as plt
-
-N = 10
 
 def five_iteration_matrix(n):
     time_of_matrix = []
